@@ -1,6 +1,7 @@
 from collections import Counter
 import os
 
+
 def _is_valid_timestamp(timestamp_str):
     if len(timestamp_str) != 19:
         return False
@@ -32,7 +33,7 @@ def analyze_user_activity(log_file_path: str) -> dict:
         }
 
     action_counts = Counter()
-    user_action_counts = Counter()
+    user_total_duration = Counter()
     login_durations = []
     unique_users = set()
 
@@ -61,7 +62,7 @@ def analyze_user_activity(log_file_path: str) -> dict:
 
             unique_users.add(user_id)
             action_counts[action] += 1
-            user_action_counts[user_id] += 1
+            user_total_duration[user_id] += duration
 
             if action == "login":
                 login_durations.append(duration)
@@ -69,12 +70,12 @@ def analyze_user_activity(log_file_path: str) -> dict:
     total_users = len(unique_users)
 
     most_active_user = None
-    if user_action_counts:
-        highest_action_count = max(user_action_counts.values())
+    if user_total_duration:
+        highest_total_duration = max(user_total_duration.values())
         top_users = sorted(
             user_id
-            for user_id, count in user_action_counts.items()
-            if count == highest_action_count
+            for user_id, total_duration in user_total_duration.items()
+            if total_duration == highest_total_duration
         )
         most_active_user = top_users[0]
 
